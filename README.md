@@ -16,9 +16,9 @@ Uma API RESTful para gerenciar usuários e seus responsáveis. Projeto desenvolv
    npm install
    ```
 
-2. **Configure o banco de dados** criando um `.env` na raiz do projeto:
+2. **Configure o banco de dados** criando um `.env` na raiz do projeto com sua credencial MongoDB:
    ```env
-   DATABASE_URL="mongodb+srv://usuario:senha@cluster.mongodb.net/database?retryWrites=true&w=majority"
+   DATABASE_URL=<sua_uri_mongodb_com_credenciais>
    ```
 
 3. **Sincronize o schema:**
