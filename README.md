@@ -1,262 +1,102 @@
-# CRUD API - Users & Parents 🚀
+# Family Manager API
 
-Uma API RESTful simples e funcional para gerenciar usuários e seus responsáveis. Perfeita para começar com Express, Prisma e MongoDB.
+Uma API RESTful para gerenciar usuários e seus responsáveis. Projeto desenvolvido para aprender o essencial de desenvolvimento backend com Node.js.
 
-## Stack
+## Tecnologias
 
 - **Node.js** com Express 5
 - **Prisma** 6 como ORM
-- **MongoDB** (Atlas) como banco de dados
+- **MongoDB** como banco de dados
 - **CommonJS** para módulos
 
-## Por que esse projeto?
+## Como Começar
 
-Criei isso pra ter um exemplo limpo de:
-- ✅ CRUD completo com tratamento de erros
-- ✅ Relacionamento um-para-muitos (Parent → Users)
-- ✅ Respostas padronizadas em JSON
-- ✅ Endpoints com validação básica
-- ✅ Pronto pra expandir
+1. **Instale as dependências:**
+   ```bash
+   npm install
+   ```
 
-## Instalação
+2. **Configure o banco de dados** criando um `.env` na raiz do projeto:
+   ```env
+   DATABASE_URL="mongodb+srv://usuario:senha@cluster.mongodb.net/database?retryWrites=true&w=majority"
+   ```
 
-### 1. Clone e instale as dependências
+3. **Sincronize o schema:**
+   ```bash
+   npx prisma db push
+   ```
 
-```bash
-git clone https://github.com/seu-usuario/crud-api-users.git
-cd crud-api-users
-npm install
-```
+4. **Rode o servidor:**
+   ```bash
+   node --watch server.js
+   ```
 
-### 2. Configure as variáveis de ambiente
+A API estará disponível em `http://localhost:3000`
 
-Crie um arquivo `.env` na raiz:
+## API Endpoints
 
-```env
-DATABASE_URL="mongodb+srv://usuario:senha@cluster.mongodb.net/database?retryWrites=true&w=majority"
-```
+### Usuários
 
-### 3. Sincronize o banco
+- **POST /usuarios** - Cria um novo usuário
+- **GET /usuarios** - Lista todos os usuários
+- **GET /usuarios/:id** - Busca um usuário específico
+- **PUT /usuarios/:id** - Atualiza um usuário
+- **DELETE /usuarios/:id** - Deleta um usuário
 
-```bash
-npx prisma db push
-```
+### Responsáveis (Parents)
 
-### 4. Inicie o servidor
-
-```bash
-# Modo desenvolvimento (com auto-reload)
-node --watch server.js
-
-# Modo produção
-node server.js
-```
-
-O servidor vai estar em `http://localhost:3000`
-
-## Endpoints da API
-
-### 📝 Usuários
-
-#### ➕ Criar usuário
-```bash
-POST /usuarios
-Content-Type: application/json
-
-{
-  "id": "user123",
-  "name": "João Silva",
-  "email": "joao@email.com",
-  "age": "25",
-  "parentId": "parent_id_opcional"
-}
-```
-
-**Resposta (201):**
-```json
-{
-  "success": true,
-  "message": "Usuário criado com sucesso",
-  "data": {
-    "id": "user123",
-    "name": "João Silva",
-    "email": "joao@email.com",
-    "age": "25",
-    "parentId": null
-  }
-}
-```
-
-#### 📋 Listar todos
-```bash
-GET /usuarios
-```
-
-**Resposta (200):**
-```json
-{
-  "success": true,
-  "message": "3 usuário(s) encontrado(s)",
-  "data": [...]
-}
-```
-
-#### 🔍 Buscar por ID
-```bash
-GET /usuarios/:id
-```
-
-#### ✏️ Atualizar
-```bash
-PUT /usuarios/:id
-Content-Type: application/json
-
-{
-  "name": "João Atualizado",
-  "email": "novo@email.com",
-  "age": "26"
-}
-```
-
-#### 🗑️ Deletar
-```bash
-DELETE /usuarios/:id
-```
-
----
-
-### 👨‍👩‍👧 Parents (Responsáveis)
-
-#### ➕ Criar parent
-```bash
-POST /parents
-
-{
-  "name": "Maria Silva",
-  "email": "maria@email.com",
-  "phone": "11999999999"
-}
-```
-
-#### 📋 Listar todos com filhos
-```bash
-GET /parents
-```
-
-**Retorna cada parent com seus usuários relacionados:**
-```json
-{
-  "success": true,
-  "message": "2 parent(s) encontrado(s)",
-  "data": [
-    {
-      "id": "parent123",
-      "name": "Maria Silva",
-      "email": "maria@email.com",
-      "phone": "11999999999",
-      "users": [
-        {
-          "id": "user123",
-          "name": "João",
-          "email": "joao@email.com",
-          "age": "8",
-          "parentId": "parent123"
-        }
-      ]
-    }
-  ]
-}
-```
-
-#### 🔍 Buscar por ID
-```bash
-GET /parents/:id
-```
-
-#### ✏️ Atualizar
-```bash
-PUT /parents/:id
-
-{
-  "name": "Maria Atualizada",
-  "email": "novo@email.com",
-  "phone": "11888888888"
-}
-```
-
-#### 🗑️ Deletar
-```bash
-DELETE /parents/:id
-```
+- **POST /parents** - Cria um novo responsável
+- **GET /parents** - Lista todos os responsáveis com seus filhos
+- **GET /parents/:id** - Busca um responsável específico
+- **PUT /parents/:id** - Atualiza um responsável
+- **DELETE /parents/:id** - Deleta um responsável
 
 ## Estrutura do Projeto
 
 ```
-crud-api-users/
+.
 ├── prisma/
-│   ├── schema.prisma       # Schema do banco
-│   └── .env               # Variáveis de ambiente
-├── node_modules/
-├── server.js              # Principal - toda a API
+│   └── schema.prisma      # Definição do banco de dados
+├── generated/             # Código gerado pelo Prisma
+├── server.js              # Servidor e endpoints
 ├── package.json
-├── package-lock.json
-├── .gitignore
-└── README.md
+└── .env                   # Variáveis de ambiente
 ```
 
 ## Modelo de Dados
 
-### User
-```
-{
-  id       String   @id      (auto-gerado)
-  email    String   @unique  (obrigatório)
-  name     String            (obrigatório)
-  age      String            (obrigatório)
-  parentId String?           (opcional)
-  parent   Parent?           (relacionamento)
-}
-```
+**User** - Representa um usuário/filho
+- `id`: Identificador único
+- `name`: Nome completo
+- `email`: Email único
+- `age`: Idade
+- `parentId`: Referência para o responsável
 
-### Parent
-```
-{
-  id    String   @id      (auto-gerado)
-  name  String            (obrigatório)
-  email String   @unique  (obrigatório)
-  phone String            (obrigatório)
-  users User[]            (lista de filhos)
-}
-```
+**Parent** - Representa um responsável
+- `id`: Identificador único
+- `name`: Nome completo
+- `email`: Email único
+- `phone`: Telefone de contato
+- `users`: Lista de filhos relacionados
 
-## Tratamento de Erros
+## Respostas da API
 
-Todos os endpoints retornam no mesmo formato:
+Todas as respostas seguem um padrão JSON simples:
 
-**Sucesso:**
 ```json
 {
   "success": true,
-  "message": "Descrição do sucesso",
-  "data": {...}
+  "message": "Descrição da operação",
+  "data": {}
 }
 ```
 
-**Erro:**
-```json
-{
-  "success": false,
-  "message": "Descrição do erro",
-  "error": "Detalhes técnicos (opcional)"
-}
-```
-
-**Status HTTP usados:**
-- `201` - Criado com sucesso
-- `200` - OK
-- `400` - Erro na requisição (dados inválidos)
-- `404` - Não encontrado
-- `500` - Erro no servidor
+Status HTTP usados:
+- `201`: Recurso criado
+- `200`: Operação bem-sucedida
+- `400`: Dados inválidos
+- `404`: Recurso não encontrado
+- `500`: Erro no servidor
 
 ## Dicas de Desenvolvimento
 
@@ -306,15 +146,4 @@ O email é único, tente outro. Verifique no Prisma Studio.
 
 ## Licença
 
-MIT - Use à vontade!
-
-## Dúvidas?
-
-Se tiver problemas:
-1. Verifique o `.env` com os dados corretos do MongoDB
-2. Rode `npx prisma db push` pra sincronizar o banco
-3. Limpe `node_modules` e rode `npm install` novamente
-
----
-
-**Made with ❤️ e bastante café ☕**
+MIT
