@@ -143,7 +143,3 @@ app.listen(3001) // ou outra porta
 
 ### Erro ao criar usuário com email duplicado?
 O email é único, tente outro. Verifique no Prisma Studio.
-
-## Licença
-
-MIT
